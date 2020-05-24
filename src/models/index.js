@@ -14,6 +14,7 @@ const setupDatabase = () => {
 
   const Reader = ReaderModel(sequelize, Sequelize);
   const Book = BookModel(sequelize, Sequelize);
+  Book.belongsTo(Reader, { as: 'reader' });
 
   sequelize.sync({ alter: true });
   return {
