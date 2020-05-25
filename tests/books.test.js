@@ -94,7 +94,7 @@ describe('/books', () => {
       ]);
     });
     describe('GET /books', () => {
-      it('gets all book records', async () => {
+      xit('gets all book records', async () => {
         const response = await request(app).get('/books');
 
         expect(response.status).to.equal(200);
@@ -112,7 +112,7 @@ describe('/books', () => {
     });
 
     describe('GET books/:bookId', () => {
-      it('get book records by book id', async () => {
+      xit('get a book record by book id', async () => {
         const book = books[0];
         const response = await request(app).get(`/books/${book.id}`);
 
@@ -122,12 +122,38 @@ describe('/books', () => {
         expect(response.body.genre).to.equal(book.genre);
         expect(response.body.ISBN).to.equal(book.ISBN);
       });
-      it('returns a 404 if the book does not exist', async () => {
+      xit('returns a 404 if the book does not exist', async () => {
         const response = await request(app).get('/books/12345');
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The book could not be found');
       });
     });
+
+    describe('GET readers/:readerId/books', () => {
+      xit('gets book records by reader id', async () => {
+        const response = await response(app).get(`readers/${reader.id}/books`);
+
+        expect(response.status).to.equal(200);
+        response.body.forEach((book) => {
+          const expected = books.find((a) => a.id === book.id);
+          expect(book.title).to.equal(expected.title);
+          expect(book.author).to.equal(expected.author);
+          expect(book.genre).to.equal(expected.genre);
+          expect(book.ISBN).to.equal(expected.ISBN);
+        });
+      });
+      xit('returns a 404 if the book does not exist', async () => {
+        const response = await request(app).get(`readers/12345/books`);
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The book could not be found');
+      });
+    });
+
+    describe('GET /books', () => {
+      it('gets book records by author', async () => {
+        const response = await response(app).get()
+      })
+    }
   });
 });

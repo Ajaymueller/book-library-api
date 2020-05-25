@@ -32,8 +32,21 @@ const getBookById = (req, res) => {
   });
 };
 
+const getBookByReaderId = (req, res) => {
+  const { readerId } = req.params;
+
+  Reader.findByPk(readerId).then((reader) => {
+    !reader
+      ? res.status(404).json({ error: 'The book could not be found' })
+      : Book.findAll({ where: { readerId: readerId } }).then((book) =>
+          res.status(200).json(book)
+        );
+  });
+};
+
 module.exports = {
   createBook,
   getBooks,
   getBookById,
+  getBookByReaderId,
 };
