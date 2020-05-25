@@ -31,7 +31,7 @@ describe('/books', () => {
   });
 
   describe('POST /readers/:readerId/books', () => {
-    it('creates a new book in the database for a given artist', async () => {
+    xit('creates a new book in the database for a given artist', async () => {
       const response = await request(app)
         .post(`/readers/${reader.id}/books`)
         .send({
@@ -52,7 +52,7 @@ describe('/books', () => {
       expect(newBookRecord.ISBN).to.equal('9780261103252');
       expect(newBookRecord.readerId).to.equal(reader.id);
     });
-    it('returns a 404 and does not create a book if the reader does not exist', (done) => {
+    xit('returns a 404 and does not create a book if the reader does not exist', (done) => {
       request(app)
         .post('/readers/12345/books')
         .send({
@@ -108,6 +108,25 @@ describe('/books', () => {
           expect(book.genre).to.equal(expected.genre);
           expect(book.ISBN).to.equal(expected.ISBN);
         });
+      });
+    });
+
+    describe('GET books/:bookId', () => {
+      it('get book records by book id', async () => {
+        const book = books[0];
+        const response = await request(app).get(`/books/${book.id}`);
+
+        expect(response.status).to.equal(200);
+        expect(response.body.title).to.equal(book.title);
+        expect(response.body.author).to.equal(book.author);
+        expect(response.body.genre).to.equal(book.genre);
+        expect(response.body.ISBN).to.equal(book.ISBN);
+      });
+      it('returns a 404 if the book does not exist', async () => {
+        const response = await request(app).get('/books/12345');
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The book could not be found');
       });
     });
   });

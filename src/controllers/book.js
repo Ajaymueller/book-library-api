@@ -16,11 +16,24 @@ const createBook = (req, res) => {
 
 const getBooks = (req, res) => {
   Book.findAll().then((books) => {
-    res.status(200).json(books);
+    !books
+      ? res.status(404).json({ error: 'The book could not be found' })
+      : res.status(200).json(books);
+  });
+};
+
+const getBookById = (req, res) => {
+  const { bookId } = req.params;
+
+  Book.findByPk(bookId).then((book) => {
+    !book
+      ? res.status(404).json({ error: 'The book could not be found' })
+      : res.status(200).json(book);
   });
 };
 
 module.exports = {
   createBook,
   getBooks,
+  getBookById,
 };

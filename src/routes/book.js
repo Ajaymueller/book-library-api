@@ -8,4 +8,6 @@ router.post('/readers/:readerId/books', bookController.createBook);
 
 router.get('/books', bookController.getBooks);
 
+router.get('/books/:bookId', bookController.getBookById);
+
 module.exports = router;
