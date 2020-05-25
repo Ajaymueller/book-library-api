@@ -132,7 +132,7 @@ describe('/books', () => {
 
     describe('GET readers/:readerId/books', () => {
       xit('gets book records by reader id', async () => {
-        const response = await response(app).get(`readers/${reader.id}/books`);
+        const response = await request(app).get(`readers/${reader.id}/books`);
 
         expect(response.status).to.equal(200);
         response.body.forEach((book) => {
@@ -151,9 +151,66 @@ describe('/books', () => {
     });
 
     describe('GET /books', () => {
-      it('gets book records by author', async () => {
-        const response = await response(app).get()
-      })
-    }
+      xit('gets book records by author', async () => {
+        const book = books[0];
+        const response = await request(app)
+          .get(`/books/author`)
+          .query({ author: 'JRR Tolkien' });
+
+        expect(response.status).to.equal(200);
+        books.forEach((book) => {
+          const expected = books.find((a) => a.id === book.id);
+          expect(book.title).to.equal(expected.title);
+          expect(book.author).to.equal(expected.author);
+          expect(book.genre).to.equal(expected.genre);
+          expect(book.ISBN).to.equal(expected.ISBN);
+        });
+      });
+      xit(`returns a 404 if the book does not exist`, async () => {
+        const response = await request(app)
+          .get(`/books/author`)
+          .query({ author: 'randomName' });
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The book could not be found');
+      });
+    });
+    describe('GET /books', () => {
+      xit('gets book records by title', async () => {
+        const book = books[0];
+        const response = await request(app)
+          .get(`/books/title`)
+          .query({ title: 'The Lord of The Rings' });
+        expect(response.status).to.equal(200);
+        books.forEach((book) => {
+          const expected = books.find((a) => a.id === book.id);
+          expect(book.title).to.equal(expected.title);
+          expect(book.author).to.equal(expected.author);
+          expect(book.genre).to.equal(expected.genre);
+          expect(book.ISBN).to.equal(expected.ISBN);
+        });
+      });
+      xit(`returns a 404 if the book does not exist`, async () => {
+        const response = await request(app)
+          .get(`/books/title`)
+          .query({ title: 'randomTitle' });
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The book could not be found');
+      });
+    });
+    describe('DELETE /books/:bookId', () => {
+      xit('deletes book record by id', async () => {
+        const book = books[0];
+        const response = await request(app).delete(`/books/${book.id}`);
+        const deletedBook = await Book.findByPk(book.id, { raw: true });
+
+        expect(response.status).to.equal(204);
+        expect(deletedBook).to.equal(null);
+      });
+      xit('returns a 404 if the book does not exist', async () => {
+        const response = await request(app).delete(`/books/12345`);
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The book could not be found.');
+      });
+    });
   });
 });

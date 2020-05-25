@@ -44,9 +44,48 @@ const getBookByReaderId = (req, res) => {
   });
 };
 
+const getBookByAuthor = (req, res) => {
+  const { author } = req.query;
+  Book.findAll({ where: { author: author } }).then((books) => {
+    const bookData = books.filter((book) => book.author === author);
+    !bookData
+      ? res.status(404).json({ error: 'The book could not be found' })
+      : res.status(200).json(bookData);
+  });
+};
+
+const getBookByTitle = async (req, res) => {
+  const { title } = req.query;
+  //const books = await Book.findAll({ where: { title: title } });
+  //const bookData = await books.filter((book) => book.title === title);
+
+  Book.findAll({ where: { title: title } }).then((books) => {
+    const bookData = books.filter((book) => book.title === title);
+
+    bookData < 1
+      ? res.status(404).json({ error: 'The book could not be found' })
+      : res.status(200).json(bookData);
+  });
+};
+
+const deleteBookById = async (req, res) => {
+  const { bookId } = req.params;
+
+  Book.findByPk(bookId).then((foundBook) => {
+    !foundBook
+      ? res.status(404).json({ error: 'The book could not be found.' })
+      : Book.destroy({ where: { id: bookId } }).then(() => {
+          res.status(204).send();
+        });
+  });
+};
+
 module.exports = {
   createBook,
   getBooks,
   getBookById,
   getBookByReaderId,
+  getBookByAuthor,
+  getBookByTitle,
+  deleteBookById,
 };
