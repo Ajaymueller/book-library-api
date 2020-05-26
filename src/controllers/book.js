@@ -48,6 +48,7 @@ const getBookByAuthor = (req, res) => {
   const { author } = req.query;
   Book.findAll({ where: { author: author } }).then((books) => {
     const bookData = books.filter((book) => book.author === author);
+    console.log('testbd', author);
     !bookData
       ? res.status(404).json({ error: 'The book could not be found' })
       : res.status(200).json(bookData);
@@ -65,6 +66,17 @@ const getBookByTitle = async (req, res) => {
     bookData < 1
       ? res.status(404).json({ error: 'The book could not be found' })
       : res.status(200).json(bookData);
+  });
+};
+
+const updateBookByBookId = async (req, res) => {
+  const { bookId } = req.params;
+  Book.findByPk(bookId).then((book) => {
+    !book
+      ? res.status(404).json({ error: 'The book could not be found.' })
+      : Book.update(req.body, { where: { id: bookId } }).then((updatedBook) => {
+          res.status(200).json(updatedBook);
+        });
   });
 };
 
@@ -87,5 +99,6 @@ module.exports = {
   getBookByReaderId,
   getBookByAuthor,
   getBookByTitle,
+  updateBookByBookId,
   deleteBookById,
 };
