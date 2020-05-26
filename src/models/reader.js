@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
-  const schema = {
+  /*const schema = {
     email: DataTypes.STRING,
     name: DataTypes.STRING,
     password: DataTypes.STRING,
-  };
+  };*/
 
   const schema = {
     email: {
