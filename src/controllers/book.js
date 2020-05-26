@@ -3,7 +3,7 @@ const { Book, Reader } = require('../models');
 const createBook = (req, res) => {
   const newBook = req.body;
   const readerId = req.params;
-  const reader = Reader.findByPk(readerId);
+  //const reader = Reader.findByPk(readerId);
 
   !reader
     ? res.status(404).json({ error: 'The reader could not be found.' })
