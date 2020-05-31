@@ -1,20 +1,22 @@
 const { Reader } = require('../models');
 
-const getReaders = (_, res) => {
-  Reader.findAll().then((readers) => {
-    res.status(200).json(readers);
-  });
+const getReaders = async (_, res) => {
+  const readers = await Reader.findAll();
+  res.status(200).json(readers);
 };
 
-const createReader = (req, res) => {
-  const newReader = req.body;
-
-  Reader.create(newReader).then((newReaderCreated) =>
-    res.status(201).json(newReaderCreated)
-  );
+const createReader = async (req, res) => {
+  try {
+    const newReader = req.body;
+    const newReaderCreated = await Reader.create(newReader);
+    res.status(201).json(newReaderCreated);
+  } catch (error) {
+    const errorMessages = error.errors.map((e) => e.message);
+    return res.status(400).json({ errors: errorMessages });
+  }
 };
 
-const updateReader = (req, res) => {
+const updateReaderById = async (req, res) => {
   const { id } = req.params;
   const newDetails = req.body;
 
@@ -27,31 +29,28 @@ const updateReader = (req, res) => {
   });
 };
 
-const getReaderById = (req, res) => {
+const getReaderById = async (req, res) => {
   const { id } = req.params;
-  Reader.findByPk(id).then((reader) => {
-    !reader
-      ? res.status(404).json({ error: 'The reader could not be found.' })
-      : res.status(200).json(reader);
-  });
+  const reader = await Reader.findByPk(id);
+  !reader
+    ? res.status(404).json({ error: 'The reader could not be found.' })
+    : res.status(200).json(reader);
 };
 
-const deleteReader = (req, res) => {
+const deleteReaderById = async (req, res) => {
   const { id } = req.params;
-
-  Reader.findByPk(id).then((foundReader) => {
-    !foundReader
-      ? res.status(404).json({ error: 'The reader could not be found.' })
-      : Reader.destroy({ where: { id } }).then(() => {
-          res.status(204).send();
-        });
-  });
+  const foundReader = await Reader.findByPk(id);
+  !foundReader
+    ? res.status(404).json({ error: 'The reader could not be found.' })
+    : Reader.destroy({ where: { id } }).then(() => {
+        res.status(204).send();
+      });
 };
 
 module.exports = {
   getReaders,
   getReaderById,
   createReader,
-  updateReader,
-  deleteReader,
+  updateReaderById,
+  deleteReaderById,
 };

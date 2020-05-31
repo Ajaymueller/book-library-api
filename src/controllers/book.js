@@ -1,9 +1,14 @@
 const { Book, Reader } = require('../models');
 
 const createBook = async (req, res) => {
-  const newBook = req.body;
-  const newBookCreated = await Book.create(newBook);
-  res.status(201).json(newBookCreated);
+  try {
+    const newBook = req.body;
+    const newBookCreated = await Book.create(newBook);
+    res.status(201).json(newBookCreated);
+  } catch (error) {
+    const errorMessages = error.errors.map((e) => e.message);
+    return res.status(400).json({ errors: errorMessages });
+  }
 };
 
 const getBooks = async (req, res) => {

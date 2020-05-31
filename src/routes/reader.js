@@ -11,7 +11,7 @@ router
 router
   .route('/:id')
   .get(readerController.getReaderById)
-  .patch(readerController.updateReader)
-  .delete(readerController.deleteReader);
+  .patch(readerController.updateReaderById)
+  .delete(readerController.deleteReaderById);
 
 module.exports = router;
