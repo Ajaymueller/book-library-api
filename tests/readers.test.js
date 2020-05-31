@@ -12,7 +12,7 @@ describe('/readers', () => {
       it('creates a new reader in the database', async () => {
         const response = await request(app).post('/readers').send({
           name: 'Elizabeth Bennet',
-          email: 'future_ms_darcy@gmail.com',
+          email: 'future_ms_darcy@gmail.co.uk',
           password: 'password',
         });
         const newReaderRecord = await Reader.findByPk(response.body.id, {
@@ -22,7 +22,7 @@ describe('/readers', () => {
         expect(response.status).to.equal(201);
         expect(response.body.name).to.equal('Elizabeth Bennet');
         expect(newReaderRecord.name).to.equal('Elizabeth Bennet');
-        expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
+        expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.co.uk');
         expect(newReaderRecord.password).to.equal('password');
       });
       it('errors if an email or password are in the wrong format', async () => {

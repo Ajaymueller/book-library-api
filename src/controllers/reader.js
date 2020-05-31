@@ -9,9 +9,9 @@ const createReader = async (req, res) => {
   try {
     const newReader = req.body;
     const newReaderCreated = await Reader.create(newReader);
-    res.status(201).json(newReaderCreated);
+    return res.status(201).json(newReaderCreated);
   } catch (error) {
-    const errorMessages = error.errors.map((e) => e.message);
+    const errorMessages = await error.errors.map((e) => e.message);
     return res.status(400).json({ errors: errorMessages });
   }
 };
