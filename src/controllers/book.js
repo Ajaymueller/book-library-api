@@ -4,9 +4,9 @@ const createBook = async (req, res) => {
   try {
     const newBook = req.body;
     const newBookCreated = await Book.create(newBook);
-    res.status(201).json(newBookCreated);
+    return res.status(201).json(newBookCreated);
   } catch (error) {
-    const errorMessages = error.errors.map((e) => e.message);
+    const errorMessages = await error.errors.map((e) => e.message);
     return res.status(400).json({ errors: errorMessages });
   }
 };
