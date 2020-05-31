@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         isEmail: {
           agrs: [true],
@@ -12,11 +13,16 @@ module.exports = (sequelize, DataTypes) => {
           args: [true],
           mag: 'Please enter an email',
         },
+        notEmpty: {
+          args: [true],
+          msg: 'Email cannot be empty',
+        },
       },
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      isAlpha: true,
       validate: {
         notEmpty: {
           args: [true],
