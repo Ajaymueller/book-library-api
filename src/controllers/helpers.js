@@ -15,22 +15,20 @@ const getModel = (model) => {
   return models[model];
 };
 
-exports.getAllItems = (res, model) => {
-  const Model = getModel(model);
-
-  return Model.findAll().then((allItems) => {
-    res.status(200).json(allItems);
-  });
+exports.getAllItems = async (res, model) => {
+  const Model = await getModel(model);
+  const allItems = await Model.findAll();
+  res.status(200).json(allItems);
 };
 
-exports.createItem = (res, model, item) => {
+exports.createItem = async (res, model, item) => {
   const Model = getModel(model);
 
-  return Model.create(item)
-    .then((newItemCreated) => res.status(201).json(newItemCreated))
-    .catch((error) => {
-      const errorMessages = error.errors.map((e) => e.message);
-
-      return res.status(400).json({ errors: errorMessages });
-    });
+  try {
+    const newItemCreated = await Model.create(item);
+    res.status(201).json(newItemCreated);
+  } catch (error) {
+    const errorMessages = await error.errors.map((e) => e.message);
+    res.status(400).json({ errors: errorMessages });
+  }
 };
