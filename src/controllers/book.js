@@ -1,4 +1,3 @@
-const { Book, Reader } = require('../models');
 const {
   getAllItems,
   createItem,
