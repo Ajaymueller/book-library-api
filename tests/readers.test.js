@@ -21,6 +21,8 @@ describe('/readers', () => {
 
         expect(response.status).to.equal(201);
         expect(response.body.name).to.equal('Elizabeth Bennet');
+        expect(response.body.email).to.equal('future_ms_darcy@gmail.co.uk');
+        expect(response.body.password).to.equal(undefined);
         expect(newReaderRecord.name).to.equal('Elizabeth Bennet');
         expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.co.uk');
         expect(newReaderRecord.password).to.equal('password');
@@ -103,7 +105,7 @@ describe('/readers', () => {
 
           expect(reader.name).to.equal(expected.name);
           expect(reader.email).to.equal(expected.email);
-          expect(reader.password).to.equal(expected.password);
+          expect(reader.password).to.equal(undefined);
         });
       });
     });
