@@ -32,3 +32,34 @@ exports.createItem = async (res, model, item) => {
     res.status(400).json({ errors: errorMessages });
   }
 };
+
+exports.getItemById = async (res, model, id) => {
+  const Model = getModel(model);
+
+  const item = await Model.findByPk(id);
+  !item
+    ? res.status(404).json({ error: `The ${model} could not be found.` })
+    : res.status(200).json(item);
+};
+
+exports.updateItem = async (res, model, item, id) => {
+  const Model = getModel(model);
+
+  const foundItem = await Model.findByPk(id);
+  !foundItem
+    ? res.status(404).json({ error: `The ${model} could not be found.` })
+    : Model.update(item, { where: { id } }).then((updatedItem) => {
+        res.status(200).json(updatedItem);
+      });
+};
+
+exports.deleteItem = async (res, model, id) => {
+  const Model = getModel(model);
+
+  const item = await Model.findByPk(id);
+  !item
+    ? res.status(404).json({ error: `The ${model} could not be found.` })
+    : Model.destroy({ where: { id } }).then(() => {
+        res.status(204).send();
+      });
+};

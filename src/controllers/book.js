@@ -1,42 +1,21 @@
 const { Book, Reader } = require('../models');
-const { getAllItems, createItem } = require('./helpers');
+const {
+  getAllItems,
+  createItem,
+  getItemById,
+  updateItem,
+  deleteItem,
+} = require('./helpers');
 
-const createBook = async (req, res) => createItem(res, 'book', req.body);
+exports.createBook = async (req, res) => createItem(res, 'book', req.body);
 
-const getBooks = (req, res) => getAllItems(res, 'book');
+exports.getBooks = (req, res) => getAllItems(res, 'book');
 
-const getBookById = async (req, res) => {
-  const { bookId } = req.params;
-  const book = await Book.findByPk(bookId);
-  !book
-    ? res.status(404).json({ error: 'The book could not be found' })
-    : res.status(200).json(book);
-};
+exports.getBookById = async (req, res) =>
+  getItemById(res, 'book', req.params.bookId);
 
-const updateBookByBookId = async (req, res) => {
-  const { bookId } = req.params;
-  const book = await Book.findByPk(bookId);
-  !book
-    ? res.status(404).json({ error: 'The book could not be found.' })
-    : Book.update(req.body, { where: { id: bookId } }).then((updatedBook) => {
-        res.status(200).json(updatedBook);
-      });
-};
+exports.updateBookByBookId = async (req, res) =>
+  updateItem(res, 'book', req.body, req.params.bookId);
 
-const deleteBookById = async (req, res) => {
-  const { bookId } = req.params;
-  const foundBook = await Book.findByPk(bookId);
-  !foundBook
-    ? res.status(404).json({ error: 'The book could not be found.' })
-    : Book.destroy({ where: { id: bookId } }).then(() => {
-        res.status(204).send();
-      });
-};
-
-module.exports = {
-  createBook,
-  getBooks,
-  getBookById,
-  updateBookByBookId,
-  deleteBookById,
-};
+exports.deleteBookById = async (req, res) =>
+  deleteItem(res, 'book', req.params.bookId);
