@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const schema = {
-    author: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       unqiue: true,

@@ -10,14 +10,14 @@ describe.only('/authors', () => {
   describe('POST /author', () => {
     it('creates an author for a given book', async () => {
       const response = await request(app).post('/author').send({
-        author: 'JRR Tolkien',
+        name: 'JRR Tolkien',
       });
       const newAuthorRecord = await Author.findByPk(response.body.id, {
         raw: true,
       });
       expect(response.status).to.equal(201);
-      expect(response.body.author).to.equal('JRR Tolkien');
-      expect(newAuthorRecord.author).to.equal('JRR Tolkien');
+      expect(response.body.name).to.equal('JRR Tolkien');
+      expect(newAuthorRecord.name).to.equal('JRR Tolkien');
     });
     it('errors if author is missing', async () => {
       const response = await request(app).post('/author').send({});
@@ -31,7 +31,7 @@ describe.only('/authors', () => {
     });
     it('errors if author is empty', async () => {
       const response = await request(app).post('/author').send({
-        author: '',
+        name: '',
       });
       const newAuthorRecord = await Author.findByPk(response.body.id, {
         raw: true,
@@ -40,6 +40,73 @@ describe.only('/authors', () => {
       expect(response.status).to.equal(400);
       expect(response.body.errors.length).to.equal(1);
       expect(newAuthorRecord).to.equal(null);
+    });
+  });
+
+  describe('with authors in the database', () => {
+    let authors;
+
+    beforeEach(async () => {
+      await Author.destroy({ where: {} });
+
+      authors = await Promise.all([
+        Author.create({
+          name: 'JRR Tolkien',
+        }),
+        Author.create({
+          name: 'Roald Dahl',
+        }),
+        Author.create({
+          name: 'William Faulker',
+        }),
+      ]);
+    });
+    describe('GET /authors', () => {
+      it('gets all authors in the database', async () => {
+        const response = await request(app).get(`/authors`);
+
+        expect(response.status).to.equal(200);
+        expect(response.body.length).to.equal(3);
+
+        response.body.forEach((author) => {
+          const expected = authors.find((a) => a.id === author.id);
+
+          expect(author.name).to.equal(expected.name);
+        });
+      });
+    });
+
+    describe('GET /author/:authorId', () => {
+      it('gets author by id', async () => {
+        const author = authors[0];
+        const response = await request(app).get(`/author/${author.id}`);
+
+        expect(response.status).to.equal(200);
+        expect(response.body.name).to.equal(author.name);
+      });
+      it('returns a 404 if the author does not exist', async () => {
+        const response = await request(app).get(`/author/12345`);
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The author could not be found.');
+      });
+    });
+
+    describe('DELETE/author/:authorId', () => {
+      it('deletes author by id', async () => {
+        const author = authors[0];
+        const response = await request(app).delete(`/author/${author.id}`);
+        const deletedAuthor = await Author.findByPk(author.id, { raw: true });
+
+        expect(response.status).to.equal(204);
+        expect(deletedAuthor).to.equal(null);
+      });
+
+      it('returns a 404 if the author does not exist', async () => {
+        const response = await request(app).delete('/author/12345');
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The author could not be found.');
+      });
     });
   });
 });
