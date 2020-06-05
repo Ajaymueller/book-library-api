@@ -94,5 +94,22 @@ describe.only('/genres', () => {
         expect(response.body.error).to.equal('The genre could not be found.');
       });
     });
+
+    describe('DELETE /genre/:genreId', () => {
+      it('deletes a genre by id', async () => {
+        const genre = genres[0];
+        const response = await request(app).delete(`/genre/${genre.id}`);
+        const deletedGenre = await Genre.findByPk(genre.id, { raw: true });
+
+        expect(response.status).to.equal(204);
+        expect(deletedGenre).to.equal(null);
+      });
+      it('returns a 404 if the genre cannot be found', async () => {
+        const response = await request(app).delete(`/genre/12345`);
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The genre could not be found.');
+      });
+    });
   });
 });

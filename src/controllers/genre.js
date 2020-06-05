@@ -18,8 +18,17 @@ exports.listGenres = async (req, res) => {
 exports.getGenreById = async (req, res) => {
   const { genreId } = req.params;
   const genre = await Genre.findByPk(genreId);
-  console.log(genreId);
   !genre
     ? res.status(404).json({ error: 'The genre could not be found.' })
     : res.status(200).json(genre);
+};
+
+exports.deleteGenreById = async (req, res) => {
+  const { genreId } = req.params;
+  const genre = await Genre.findByPk(genreId);
+  !genre
+    ? res.status(404).json({ error: 'The genre could not be found.' })
+    : Genre.destroy({ where: { id: genreId } }).then(() =>
+        res.status(204).send()
+      );
 };

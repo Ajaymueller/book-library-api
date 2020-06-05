@@ -10,4 +10,6 @@ router.get('/genres', genreController.listGenres);
 
 router.get('/genre/:genreId', genreController.getGenreById);
 
+router.delete('/genre/:genreId', genreController.deleteGenreById);
+
 module.exports = router;
