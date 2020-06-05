@@ -1,6 +1,13 @@
 const { Genre } = require('../models');
+const {
+  getAllItems,
+  createItem,
+  getItemById,
+  updateItem,
+  deleteItem,
+} = require('./helpers');
 
-exports.createGenre = async (req, res) => {
+/*exports.createGenre = async (req, res) => {
   try {
     const genre = await Genre.create(req.body);
     res.status(201).json(genre);
@@ -8,7 +15,9 @@ exports.createGenre = async (req, res) => {
     const errorMessages = await error.errors.map((e) => e.message);
     res.status(400).json({ errors: errorMessages });
   }
-};
+};*/
+
+exports.createGenre = async (req, res) => createItem(res, 'genre', req.body);
 
 exports.listGenres = async (req, res) => {
   const genres = await Genre.findAll();

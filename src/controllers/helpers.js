@@ -1,4 +1,4 @@
-const { Book, Reader } = require('../models');
+const { Book, Reader, Genre, Author } = require('../models');
 
 const get404Error = (model) => {
   {
@@ -10,6 +10,8 @@ const getModel = (model) => {
   const models = {
     book: Book,
     reader: Reader,
+    genre: Genre,
+    author: Author,
   };
 
   return models[model];
@@ -49,7 +51,7 @@ exports.createItem = async (res, model, item) => {
 exports.getItemById = async (res, model, id) => {
   const Model = getModel(model);
 
-  const item = await Model.findByPk(id);
+  const item = await Model.findByPk(id, { includes: Genre });
   !item
     ? res.status(404).json({ error: `The ${model} could not be found.` })
     : res.status(200).json(item);
