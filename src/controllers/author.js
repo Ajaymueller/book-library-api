@@ -1,7 +1,4 @@
 const { Author } = require('../models');
-const { createItem } = require('./helpers');
-
-//exports.createAuthor = async (req, res) => createItem(res, 'author', req.body);
 
 exports.createAuthor = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const schema = {
-    genre: {
+    genreName: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
