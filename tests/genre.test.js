@@ -5,11 +5,13 @@ const { Genre } = require('../src/models');
 const app = require('../src/app');
 
 describe.only('/genres', () => {
-  before(async () => Genre.sequelize.sync());
+  before(async () => {
+    await Genre.sequelize.sync();
+  });
 
   describe('POST /genre', () => {
-    it('creates a genre for a given book', async () => {
-      const response = await request(app).post('/genre').send({
+    it('creates a new genre', async () => {
+      const response = await request(app).post(`/genre`).send({
         genreName: 'Fantasy',
       });
 
@@ -89,6 +91,28 @@ describe.only('/genres', () => {
       });
       it('returns a 404 if the genre cannot be found', async () => {
         const response = await request(app).get('/genre/12345');
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The genre could not be found.');
+      });
+    });
+
+    describe('UPDATE /genre/:genreId', () => {
+      it('updates a genre by id', async () => {
+        const genre = genres[0];
+        const response = await request(app).patch(`/genre/${genre.id}`).send({
+          genreName: 'Horror',
+        });
+
+        const updatedGenre = await Genre.findByPk(genre.id, { raw: true });
+
+        expect(response.status).to.equal(200);
+        expect(updatedGenre.genreName).to.equal('Horror');
+      });
+      it('returns a 404 if the genre could not be found', async () => {
+        const response = await request(app).patch('/genre/12345').send({
+          genreName: 'randonGenre',
+        });
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The genre could not be found.');
