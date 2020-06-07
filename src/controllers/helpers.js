@@ -1,10 +1,6 @@
 const { Book, Reader, Genre, Author } = require('../models');
 
-const get404Error = (model) => {
-  {
-    error: `The ${model} could not be found.`;
-  }
-};
+const get404Error = (model) => ({ error: `The ${model} could not be found.` });
 
 const getModel = (model) => {
   const models = {
@@ -18,7 +14,8 @@ const getModel = (model) => {
 };
 
 const getOptions = (model) => {
-  if (model === 'book') return { include: Genre };
+  if (model === 'book')
+    return { include: [{ model: Genre }, { model: Author }] };
 
   if (model === 'genre') return { include: Book };
 
@@ -64,9 +61,7 @@ exports.getItemById = async (res, model, id) => {
   const options = getOptions(model);
 
   const item = await Model.findByPk(id, { ...options });
-  !item
-    ? res.status(404).json({ error: `The ${model} could not be found.` })
-    : res.status(200).json(item);
+  !item ? res.status(404).json(get404Error(model)) : res.status(200).json(item);
 };
 
 exports.updateItem = async (res, model, item, id) => {
@@ -74,7 +69,7 @@ exports.updateItem = async (res, model, item, id) => {
 
   return Model.update(item, { where: { id } }).then(([recordsUpdated]) => {
     if (!recordsUpdated) {
-      res.status(404).json({ error: `The ${model} could not be found.` });
+      res.status(404).json(get404Error(model));
     } else {
       getModel(model)
         .findByPk(id)
@@ -91,7 +86,7 @@ exports.deleteItem = async (res, model, id) => {
 
   const item = await Model.findByPk(id);
   !item
-    ? res.status(404).json({ error: `The ${model} could not be found.` })
+    ? res.status(404).json(get404Error(model))
     : Model.destroy({ where: { id } }).then(() => {
         res.status(204).send();
       });

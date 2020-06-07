@@ -8,7 +8,7 @@ const {
 
 exports.createBook = async (req, res) => createItem(res, 'book', req.body);
 
-exports.getBooks = (req, res) => getAllItems(res, 'book');
+exports.getBooks = async (req, res) => getAllItems(res, 'book');
 
 exports.getBookById = async (req, res) =>
   getItemById(res, 'book', req.params.bookId);

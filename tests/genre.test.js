@@ -7,10 +7,11 @@ const app = require('../src/app');
 describe('/genres', () => {
   before(async () => {
     await Genre.sequelize.sync();
+    await Genre.destroy({ where: {} });
   });
 
   describe('POST /genre', () => {
-    it('creates a new genre', async () => {
+    it('creates a new genre in the database', async () => {
       const response = await request(app).post(`/genre`).send({
         genreName: 'Fantasy',
       });
@@ -18,6 +19,7 @@ describe('/genres', () => {
       const newGenreRecord = await Genre.findByPk(response.body.id, {
         raw: true,
       });
+
       expect(response.status).to.equal(201);
       expect(response.body.genreName).to.equal('Fantasy');
       expect(newGenreRecord.genreName).to.equal('Fantasy');

@@ -4,8 +4,11 @@ const request = require('supertest');
 const { Book } = require('../src/models');
 const app = require('../src/app');
 
-describe('/books', () => {
-  before(async () => Book.sequelize.sync());
+describe.only('/books', () => {
+  before(async () => {
+    await Book.sequelize.sync();
+    await Book.destroy({ where: {} });
+  });
 
   describe('with no records in the database', () => {
     describe('POST /books', () => {
@@ -20,6 +23,7 @@ describe('/books', () => {
 
         expect(response.status).to.equal(201);
         expect(response.body.title).to.equal('The Lord of The Rings');
+        expect(response.body.ISBN).to.equal('9780261103252');
         expect(newBookRecord.title).to.equal('The Lord of The Rings');
         expect(newBookRecord.ISBN).to.equal('9780261103252');
       });

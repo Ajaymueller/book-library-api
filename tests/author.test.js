@@ -4,7 +4,7 @@ const request = require('supertest');
 const { Author } = require('../src/models');
 const app = require('../src/app');
 
-describe.only('/authors', () => {
+describe('/authors', () => {
   before(async () => Author.sequelize.sync());
 
   describe('POST /author', () => {
