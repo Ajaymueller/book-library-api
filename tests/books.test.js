@@ -4,7 +4,7 @@ const request = require('supertest');
 const { Book } = require('../src/models');
 const app = require('../src/app');
 
-describe.only('/books', () => {
+describe('/books', () => {
   before(async () => {
     await Book.sequelize.sync();
     await Book.destroy({ where: {} });
