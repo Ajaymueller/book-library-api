@@ -14,5 +14,8 @@ exports.listAuthors = async (req, res) => getAllItems(res, 'author');
 exports.getAuthorById = async (req, res) =>
   getItemById(res, 'author', req.params.authorId);
 
+exports.updateAuthorById = async (req, res) =>
+  updateItem(res, 'author', req.body, req.params.authorId);
+
 exports.deleteAuthorById = async (req, res) =>
   deleteItem(res, 'author', req.params.authorId);

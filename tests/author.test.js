@@ -4,7 +4,7 @@ const request = require('supertest');
 const { Author } = require('../src/models');
 const app = require('../src/app');
 
-describe('/authors', () => {
+describe.only('/authors', () => {
   before(async () => Author.sequelize.sync());
 
   describe('POST /author', () => {
@@ -86,6 +86,29 @@ describe('/authors', () => {
       });
       it('returns a 404 if the author does not exist', async () => {
         const response = await request(app).get(`/author/12345`);
+
+        expect(response.status).to.equal(404);
+        expect(response.body.error).to.equal('The author could not be found.');
+      });
+    });
+
+    describe('PATCH /author/:authorId', () => {
+      it('updates author by id', async () => {
+        const author = authors[0];
+        const response = await request(app).patch(`/author/${author.id}`).send({
+          name: 'Christopher Tolkien',
+        });
+
+        const updatedAuthor = await Author.findByPk(author.id, { raw: true });
+
+        expect(response.status).to.equal(200);
+        expect(updatedAuthor.name).to.equal('Christopher Tolkien');
+      });
+
+      it('returns a 404 if the author could not be found', async () => {
+        const response = await request(app).patch(`/author/12345`).send({
+          name: 'randomName',
+        });
 
         expect(response.status).to.equal(404);
         expect(response.body.error).to.equal('The author could not be found.');
